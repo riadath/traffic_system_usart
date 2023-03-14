@@ -6,32 +6,41 @@
 #include "stm32f4xx.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+
 
 int main(void)
 {
-	uint8_t buffer;
-	char *str;
-	char ch = 'l';
+	//uint8_t buffer;
+	char *rcv_str;
+	char send_str[] = "dumdum";
+	char ch;
 	uint32_t i = 0;
+	
+	
 	/*	Configuration */
 	initClock();
 	sysInit();
-	
-	//UART Configuration 
 	UART2_Config();
 	UART4_Config();
 	UART5_Config();
-		
+
+	
 	UART_SendString(USART2,"\nHello World i work\n");
 	
-	for (i = 0;i < 6;i++){
-		UART_SendChar(UART4,'d');
+	
+	rcv_str = (char *)malloc(5 * sizeof(char));
+	
+	for (i = 0;i < strlen(send_str);i++){
+		UART_SendChar(UART4,send_str[i]);
+		ch = UART_GetChar(UART5);
+		rcv_str[i] = ch;
 	}
 	
-	UART_GetString(UART5,6,&buffer);
-	str = (char *)&buffer;
+//	UART_GetString(UART5,6,&buffer);
+//	str = (char *)&buffer;
 	
-	UART_SendString(USART2,str);
+	UART_SendString(USART2,rcv_str);
 }
 
 
