@@ -111,7 +111,6 @@ void UART_GetString(USART_TypeDef *uart,uint16_t size,uint8_t* buff)
 	* 6. Enable transmission TE and recieption bits in USART_CR1 register
 	*******************************************/
 
-
 /**********************************
 * USART 2 Configuration
 ***********************************/
@@ -180,6 +179,7 @@ void UART4_Config(void){
 	UART4->CR1 |= (1<<2); // enable RE for receiver 
 	UART4->CR1 |= (1<<3); //enable TE for transmitter
 	
+    UART4->CR1 |= USART_CR1_RXNEIE; //enable RXNEIE for reciever
 }
 
 void UART5_Config(void){
@@ -215,4 +215,5 @@ void UART5_Config(void){
 	UART5->CR1 |= (1<<2); // enable RE for receiver 
 	UART5->CR1 |= (1<<3); //enable TE for transmitter
 	
+    UART5->CR1 |= USART_CR1_RXNEIE; //enable RXNEIE for reciever
 }
