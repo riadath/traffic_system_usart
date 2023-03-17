@@ -143,7 +143,7 @@ void UART2_Config(void){
 	//  6. Enable transmission TE and recieption bits in USART_CR1 register
 	USART2->CR1 |= (1<<2); // enable RE for receiver 
 	USART2->CR1 |= (1<<3); //enable TE for transmitter
-	
+	USART2->CR1 |= USART_CR1_RXNEIE;
 }
 
 
@@ -170,7 +170,7 @@ void UART4_Config(void){
 	UART4->CR1 |= (1<<13);  // UE-bit enable USART
 	
 	//4. Program M bit in USART CR1 to define the word length
-	UART4->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
+//	UART4->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
 	
 	//5. Select the baud rate using the USART_BRR register.
 	UART4->BRR |= (7<<0) | (24<<4); //115200
@@ -206,7 +206,7 @@ void UART5_Config(void){
 	UART5->CR1 |= (1<<13);  // UE-bit enable USART
 	
 	//4. Program M bit in USART CR1 to define the word length
-	UART5->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
+//	UART5->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
 	
 	//5. Select the baud rate using the USART_BRR register.
 	UART5->BRR |= (7<<0) | (24<<4); //115200
