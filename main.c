@@ -163,7 +163,7 @@ int main(void)
         ms_delay(t_delay);
         
         if (strlen(output_buff) != 0){
-            if(!strcmp(output_buff,"inc") == 1){
+            if(!strcmp(output_buff,"inc")){
                 t_delay = 1000;
             }else if(!strcmp(output_buff,"dec")){
                 t_delay = 100;
