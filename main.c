@@ -19,19 +19,23 @@ void USART2_GetString(void);
 void parseInputString(void);
 
 void parseInputString(void){
-//    uint8_t ch,idx = 0;
-//    ch = UART_GetChar(USART2);
-//    input_buff[idx] = 0;
-}
-void USART2_GetString(void){
-    USART2->CR1 &= ~USART_CR1_RXNEIE;
-    parseInputString();
-    USART2->CR1 |= USART_CR1_RXNEIE;
+    uint8_t ch,idx = 0;
+    ch = UART_GetChar(USART2);
+    while(ch != '.'){
+        input_buff[idx++] = ch;
+        ch = UART_GetChar(USART2);
+        if(ch == '.')break;
+    }      
+    input_buff[idx] = '\0';
+    
+//    for(int i = 0;i < strlen(input_buff);i++){
+//        UART_SendChar(USART2,input_buff[i]);
+//    }
 }
 
-void USRT2_IRQHandler(void){
+void USART2_IRQHandler(void){
     USART2->CR1 &= ~(USART_CR1_RXNEIE);
-    USART2_GetString();
+    parseInputString();
     USART2->CR1 |= (USART_CR1_RXNEIE);
 }
 
@@ -76,7 +80,7 @@ void UART5_IRQHandler(void){
 }
 
 
-void transmit_data(char to_send[],uint32_t direction)
+void transmit_data(uint32_t direction)
 {
     /*
     direction = 0 => transmit from UART4 -> UART5
@@ -95,13 +99,11 @@ void transmit_data(char to_send[],uint32_t direction)
         return;
     }
     
-    for (i = 0;i < strlen(to_send);i++){
-        input_buff[in_idx] = to_send[i];
-        
+    for (i = 0;i < strlen(input_buff);i++){
         //Enable Interrupt
         usart->CR1 |= USART_CR1_TXEIE;
         while((usart->CR1 & USART_CR1_TXEIE));
-        ms_delay(1);
+        ms_delay(2);
         in_idx++;
         out_idx++;
     }
@@ -127,27 +129,46 @@ int main(void)
     NVIC_EnableIRQ(USART2_IRQn);
     NVIC_SetPriority(UART4_IRQn, 1);
     NVIC_EnableIRQ(UART4_IRQn);
-    
     NVIC_SetPriority(UART5_IRQn, 1);
     NVIC_EnableIRQ(UART5_IRQn);
-    UART_SendString(USART2,"  HELLO I'M IN   ");
+    
+    NVIC_SetPriority(SysTick_IRQn,0);
+    NVIC_EnableIRQ(SysTick_IRQn);
+    
+    UART_SendString(USART2,"HELLO I'M IN\n");
+    
+    
+    // GPIO Config
+    GPIO_InitTypeDef gpio_config;
+    gpio_config.Mode = GPIO_MODE_OUTPUT_PP;
+    gpio_config.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
+    gpio_config.Pin = GPIO_PIN_5;
+    
+    
+    GPIO_Init(GPIOA,&gpio_config);
+    
+    
     while(1){
-        uint8_t *buffer;
-        UART_GetString(USART2,6,&buffer);
-        char *to_send = (char *)&buffer;
         
-        transmit_data(to_send,1);
-        
-        UART_SendString(USART2,"(main): ");
+        if(strlen(input_buff) != 0){
+//            UART_SendString(USART2,input_buff);
+//            UART_SendString(USART2,"\n");
+            transmit_data(1);
+            strcpy(input_buff,"");
+        }    
+        GPIO_WritePin(GPIOA,5,GPIO_PIN_SET);
+        ms_delay(300);
+        GPIO_WritePin(GPIOA,5,GPIO_PIN_RESET);
+        ms_delay(300);
         
         if (strlen(output_buff) != 0){
+            UART_SendString(USART2,"(main): ");
             UART_SendString(USART2,output_buff);
-            
-        }else{
-            UART_SendString(USART2,"OUTPUT EMPTY");
+            UART_SendString(USART2,"\n");
+            strcpy(output_buff,"");
         }
-        UART_SendString(USART2,"\n");
-        strcpy(output_buff,"");
+        
+        
     }
 }
 

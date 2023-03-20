@@ -62,10 +62,10 @@ void GPIO_Init(GPIO_TypeDef* GPIOx,GPIO_InitTypeDef *GPIO_Init)
 	uint32_t cur_position;
 	uint32_t check_position;
 	
-	/* Enabling GPIOA and GPIOB in the AHB1 Bus 
+	// Enabling GPIOA and GPIOB in the AHB1 Bus 
 	RCC->AHB1ENR |= (1<<RCC_AHB1ENR_GPIOAEN_Pos);
 	RCC->AHB1ENR |= (1<<RCC_AHB1ENR_GPIOBEN_Pos);
-    */
+    
 	
 	for (position = 0U;position < GPIO_NUMBER;position++){
 		

@@ -144,7 +144,8 @@ void UART2_Config(void){
 	//  6. Enable transmission TE and recieption bits in USART_CR1 register
 	USART2->CR1 |= (1<<2); // enable RE for receiver 
 	USART2->CR1 |= (1<<3); //enable TE for transmitter
-//	USART2->CR1 |= USART_CR1_RXNEIE;
+	
+    USART2->CR1 |= USART_CR1_RXNEIE;
 }
 
 
@@ -194,8 +195,8 @@ void UART5_Config(void){
 	GPIOC->MODER |= (2<<24);  //PC12 -> Tx
 	GPIOD->MODER |= (2<<4);  //PD2 -> Rx
 	
-	GPIOC->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<24);
-	GPIOD->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<4);
+	GPIOC->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<24);
+	GPIOD->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<4);
 	
 	
 	GPIOC->AFR[1] |= (8<<16); // bits(19,18,17,16) = (1000)
