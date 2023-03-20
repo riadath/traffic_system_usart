@@ -102,6 +102,7 @@ void UART_GetString(USART_TypeDef *uart,uint16_t size,uint8_t* buff)
 }
 
 
+
 /******************************************
 	* 1. Enable UART clock and GPIO clock
 	* 2. Configure UART pin for Alternate function
@@ -143,7 +144,7 @@ void UART2_Config(void){
 	//  6. Enable transmission TE and recieption bits in USART_CR1 register
 	USART2->CR1 |= (1<<2); // enable RE for receiver 
 	USART2->CR1 |= (1<<3); //enable TE for transmitter
-	USART2->CR1 |= USART_CR1_RXNEIE;
+//	USART2->CR1 |= USART_CR1_RXNEIE;
 }
 
 
@@ -158,8 +159,8 @@ void UART4_Config(void){
 	GPIOA->MODER |= (2<<0);  //PA0 -> Tx
 	GPIOA->MODER |= (2<<2);  //PA1 -> Rx
 	
-	GPIOA->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<0) | 
-					  (GPIO_SPEED_FREQ_VERY_HIGH<<2);  
+	GPIOA->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<0) | 
+					  (GPIO_SPEED_FREQ_HIGH<<2);  
 	
 	GPIOA->AFR[0] |= (8<<0); // bits(3,2,1,0) = (1000)
 	GPIOA->AFR[0] |= (8<<4); // bits(7,6,5,4) = (1000)
@@ -170,7 +171,7 @@ void UART4_Config(void){
 	UART4->CR1 |= (1<<13);  // UE-bit enable USART
 	
 	//4. Program M bit in USART CR1 to define the word length
-//	UART4->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
+	UART4->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
 	
 	//5. Select the baud rate using the USART_BRR register.
 	UART4->BRR |= (7<<0) | (24<<4); //115200
@@ -186,27 +187,27 @@ void UART5_Config(void){
 	
 	//1. Enable UART clock and GPIO clock
 	RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; //enable GPIOC clock
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; //enable GPIOC
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; //enable GPIOD
 	
 	//2. Configure UART pin for Alternate function
 	GPIOC->MODER |= (2<<24);  //PC12 -> Tx
 	GPIOD->MODER |= (2<<4);  //PD2 -> Rx
 	
-	GPIOC->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<24);
-	GPIOD->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<4);
+	GPIOC->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<24);
+	GPIOD->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<4);
 	
 	
 	GPIOC->AFR[1] |= (8<<16); // bits(19,18,17,16) = (1000)
 	GPIOD->AFR[0] |= (8<<8); // bits(11,10,9,8) = (1000)
 	
-	//3. Enable UART on UART4_CR1 rgister
+	//3. Enable UART on UART5_CR1 rgister
 	UART5->CR1 = 0x00; //clear USART
 	
 	UART5->CR1 |= (1<<13);  // UE-bit enable USART
 	
 	//4. Program M bit in USART CR1 to define the word length
-//	UART5->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
+	UART5->CR1 &= ~(1U<<12); // set M bit  = 0 for 8-bit word length
 	
 	//5. Select the baud rate using the USART_BRR register.
 	UART5->BRR |= (7<<0) | (24<<4); //115200
