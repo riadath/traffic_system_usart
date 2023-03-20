@@ -21,10 +21,10 @@ void parseInputString(void);
 void parseInputString(void){
     uint8_t ch,idx = 0;
     ch = UART_GetChar(USART2);
-    while(ch != '.'){
+    while(ch != '!'){
         input_buff[idx++] = ch;
         ch = UART_GetChar(USART2);
-        if(ch == '.')break;
+        if(ch == '!')break;
     }      
     input_buff[idx] = '\0';
     
@@ -115,7 +115,8 @@ void transmit_data(uint32_t direction)
 
 
 int main(void)
-{
+{   
+    uint32_t t_delay = 500;
 	
 	/*	Configuration */
 	initClock();
@@ -157,11 +158,17 @@ int main(void)
             strcpy(input_buff,"");
         }    
         GPIO_WritePin(GPIOA,5,GPIO_PIN_SET);
-        ms_delay(300);
+        ms_delay(t_delay);
         GPIO_WritePin(GPIOA,5,GPIO_PIN_RESET);
-        ms_delay(300);
+        ms_delay(t_delay);
         
         if (strlen(output_buff) != 0){
+            if(!strcmp(output_buff,"inc") == 1){
+                t_delay = 1000;
+            }else if(!strcmp(output_buff,"dec")){
+                t_delay = 100;
+            }
+            
             UART_SendString(USART2,"(main): ");
             UART_SendString(USART2,output_buff);
             UART_SendString(USART2,"\n");
