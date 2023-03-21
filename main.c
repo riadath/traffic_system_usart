@@ -185,7 +185,7 @@ void show_traffic_info(void){
 	
 	char str[50];
 	
-	sprintf(str, "%d traffic light 1 %s %s %s\n", (uint32_t) global_time, G_NS_state, Y_NS_state, R_NS_state);
+	sprintf(str, "\n%d traffic light 1 %s %s %s\n", (uint32_t) global_time, G_NS_state, Y_NS_state, R_NS_state);
 	UART_SendString(USART2, str);
 	sprintf(str, "%d traffic light 2 %s %s %s\n", (uint32_t) global_time, G_EW_state, Y_EW_state, R_EW_state);
 	UART_SendString(USART2, str);
