@@ -16,9 +16,9 @@ void UART4_IRQHandler(void);
 void UART5_IRQHandler(void);
 void USRT2_IRQHandler(void);
 void USART2_GetString(void);
-void parseInputString(void);
+void getCommand(void);
 
-void parseInputString(void){
+void getCommand(void){
     uint8_t ch,idx = 0;
     ch = UART_GetChar(USART2);
     while(ch != '!'){
@@ -33,9 +33,12 @@ void parseInputString(void){
 //    }
 }
 
+void parseCommand(void){
+    
+}
 void USART2_IRQHandler(void){
     USART2->CR1 &= ~(USART_CR1_RXNEIE);
-    parseInputString();
+    getCommand();
     USART2->CR1 |= (USART_CR1_RXNEIE);
 }
 
@@ -103,6 +106,7 @@ void transmit_data(uint32_t direction)
         //Enable Interrupt
         usart->CR1 |= USART_CR1_TXEIE;
         while((usart->CR1 & USART_CR1_TXEIE));
+        
         ms_delay(2);
         in_idx++;
         out_idx++;
@@ -136,6 +140,8 @@ int main(void)
     NVIC_SetPriority(SysTick_IRQn,0);
     NVIC_EnableIRQ(SysTick_IRQn);
     
+    
+
     UART_SendString(USART2,"HELLO I'M IN\n");
     
     
@@ -154,7 +160,7 @@ int main(void)
         if(strlen(input_buff) != 0){
 //            UART_SendString(USART2,input_buff);
 //            UART_SendString(USART2,"\n");
-            transmit_data(1);
+            transmit_data(0);
             strcpy(input_buff,"");
         }    
         GPIO_WritePin(GPIOA,5,GPIO_PIN_SET);
@@ -173,7 +179,7 @@ int main(void)
             UART_SendString(USART2,output_buff);
             UART_SendString(USART2,"\n");
             strcpy(output_buff,"");
-        }
+        }else if (strlen(output_buff)
         
         
     }
