@@ -9,16 +9,58 @@
 #include <stdio.h>
 #include <string.h>
 
+enum UART_DIRECTION{
+	UART4_TO_UART5 = 0,
+	UART5_TO_UART4 = 1,
+};
+
 static char input_buff[50],output_buff[50];
 static uint32_t in_idx,out_idx;
 
+static uint16_t runningNS = 1;
+static uint16_t GREEN_NS = 8;
+static uint16_t GREEN_EW = 6;
+static uint16_t RED_EW = 5;
+static uint16_t RED_NS = 9;
+static uint16_t TRAFFIC_NS = 2;
+static uint16_t TRAFFIC_EW = 1;
+static uint16_t report_interval = 5000;
+
+
+static uint16_t runningTime = 2000;
+static uint16_t extraTime = 3;
+static uint16_t g_delayNS = 5;
+static uint16_t r_delayNS = 2;
+static uint16_t y_delayNS = 1;
+
+static uint16_t g_delayEW = 5;
+static uint16_t r_delayEW = 2;
+static uint16_t y_delayEW = 1;
+
+static uint32_t global_time = 0;
+
 void UART4_IRQHandler(void);
 void UART5_IRQHandler(void);
-void USRT2_IRQHandler(void);
+void USART2_IRQHandler(void);
 void USART2_GetString(void);
-void parseInputString(void);
+void transmit_data(uint32_t direction);
 
-void parseInputString(void){
+void TIM5Config(void);
+void TIM2Config(void);
+void delay_micro(uint16_t us);
+void tim5_delay(uint16_t ms);
+
+void getString(void);
+void parseCommand(void);
+void show_traffic_info(void);
+void showTrafficConfig(uint32_t light_no);
+void showReportIntervalConfig(void);
+void setDelayTraffic(char ch,uint32_t del,uint32_t light_no);
+void clearLEDs(void);
+
+
+
+void getString(void){
     uint8_t ch,idx = 0;
     ch = UART_GetChar(USART2);
     while(ch != '!'){
@@ -28,14 +70,125 @@ void parseInputString(void){
     }      
     input_buff[idx] = '\0';
     
-//    for(int i = 0;i < strlen(input_buff);i++){
+//	uint32_t i;
+//    for(i = 0;i < strlen(input_buff);i++){
 //        UART_SendChar(USART2,input_buff[i]);
 //    }
+	
+	//parseCommand();
+
+}
+void setDelayTraffic(char ch,uint32_t del,uint32_t light_no){
+	
+	if(light_no == 1){
+		if (ch == 'G'){
+			g_delayNS = (uint16_t)del;
+		}else  if (ch == 'Y'){
+			y_delayNS = (uint16_t)del;
+		}else if(ch == 'R'){
+			r_delayNS = (uint16_t)del;
+		}
+	}else if(light_no == 2){
+		if (ch == 'G'){
+			g_delayEW = (uint16_t)del;
+		}else  if (ch == 'Y'){
+			y_delayEW = (uint16_t)del;
+		}else if(ch == 'R'){
+			r_delayEW = (uint16_t)del;
+		}
+	}
+}
+
+void showTrafficConfig(uint32_t light_no){
+	char str[50];
+	if (light_no == 1)
+		sprintf(str,"traffic light 1 G Y R %d %d %d %d\n",(uint32_t)g_delayNS,
+		(uint32_t)y_delayNS,(uint32_t)r_delayNS,(uint32_t)extraTime);
+	if (light_no == 2)
+		sprintf(str,"traffic light 2 G Y R %d %d %d %d\n",(uint32_t)g_delayEW,
+		(uint32_t)y_delayEW,(uint32_t)r_delayEW,(uint32_t)extraTime);
+	
+//	UART_SendString(USART2,str);
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2,output_buff);
+	strcpy(output_buff,"");
+}
+
+void showReportIntervalConfig(void){
+	char str[50];
+	sprintf(str,"traffic monitor %d\n",(uint32_t)report_interval/1000);
+	
+//	UART_SendString(USART2,str);
+	
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2,output_buff);
+	strcpy(output_buff,"");
+}
+void parseCommand(void){
+	/*
+	transmit command from control center to traffic system
+	UART4 = Control Center
+	UART5 = Traffic System
+	*/
+	char command[50],c1,c2,c3;
+	uint32_t light_no,del1,del2,del3,ext,rep_int;
+	
+	transmit_data(UART4_TO_UART5);
+	strcpy(command,output_buff);
+	
+	if (command[0] == 'c'){
+		if(command[15] == 'l'){
+			sscanf(command,"config traffic light %d %c %c %c %d %d %d %d",
+			&light_no,&c1,&c2,&c3,&del1,&del2,&del3,&ext);
+			
+			setDelayTraffic(c1,del1,light_no);
+			setDelayTraffic(c3,del3,light_no);
+			setDelayTraffic(c2,del2,light_no);
+			
+			extraTime = (uint16_t)ext;
+		}
+		else if(command[15] == 'm'){
+			sscanf(command,"config traffic monitor %d",&rep_int);
+			report_interval = (uint16_t)(rep_int * 1000);
+		}
+	}
+	else if(command[0] == 'r'){
+		if (strlen(command) == 4){
+			showTrafficConfig(1);
+			showTrafficConfig(2);
+			showReportIntervalConfig();
+		}
+		else if (command[13] == 'l'){
+			sscanf(command,"read traffic light %d",&light_no);
+			showTrafficConfig(light_no);
+		}
+		else if(command[13] == 'm'){
+			showReportIntervalConfig();
+		}
+	}
+	strcpy(input_buff,"");
+	strcpy(output_buff,"");
+}
+
+void show_traffic_info(void){
+	UART_SendString(USART2,"\nreporting stuff\n");
+	uint16_t G_NS_state = GPIO_PIN_8 & GPIOA->IDR;
+	uint16_t R_NS_state = GPIO_PIN_9 & GPIOA->IDR;
+	uint16_t G_EW_state = GPIO_PIN_6 & GPIOA->IDR;
+	uint16_t R_EW_state = GPIO_PIN_5 & GPIOA->IDR;
+	uint16_t Y_NS_state = (RED_NS == 0 && GREEN_NS == 0)? 1 : 0;
+	uint16_t Y_EW_state = (RED_EW == 0 && GREEN_EW == 0)? 1 : 0;
+	
+	uint16_t NS_congestion = TRAFFIC_NS & GPIOB->IDR;
+	uint16_t EW_congestion = TRAFFIC_EW & GPIOB->IDR;
+	
 }
 
 void USART2_IRQHandler(void){
     USART2->CR1 &= ~(USART_CR1_RXNEIE);
-    parseInputString();
+    getString();
     USART2->CR1 |= (USART_CR1_RXNEIE);
 }
 
@@ -86,13 +239,15 @@ void transmit_data(uint32_t direction)
     direction = 0 => transmit from UART4 -> UART5
     direction = 1 => transmit from UART5 -> UART4
      */
+	
     uint32_t i = 0;
-    in_idx = 0,out_idx = 0;
-    USART_TypeDef* usart;
-    if(direction == 0){
+	USART_TypeDef* usart;
+    in_idx = 0;
+	out_idx = 0;
+    if(direction == UART4_TO_UART5){
         usart = UART4;
     }
-    else if (direction == 1){
+    else if (direction == UART5_TO_UART4){
         usart = UART5;
     }
     else{
@@ -111,10 +266,11 @@ void transmit_data(uint32_t direction)
     usart = NULL;
 }
 
+
 void TIM5Config(void){
 	RCC->APB1ENR |= (1<<3);
 	
-	TIM5->PSC = 45000 - 1; /* fck = 90 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
+	TIM5->PSC = 45000 - 1; /* fck = 45 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
 	TIM5->ARR = 0xFFFF; /*maximum clock count*/
 	
 	TIM5->CR1 |= (1<<0);
@@ -122,11 +278,45 @@ void TIM5Config(void){
 	while(!(TIM5->SR & (1<<0)));
 	
 }
+void tim5_delay(uint16_t ms){
+	ms = (uint16_t)2 * ms;
+	TIM5->CNT = 0;
+//	char str[50];
+//	sprintf(str,"in tim5delay tim2->cnt %d\n",TIM2->CNT);
+	
+//	UART_SendString(USART2,str);
+	while(TIM5->CNT < ms){
+		if(TIM2->CNT > report_interval*2){
+			global_time += report_interval/1000;
+			show_traffic_info();
+			if(strlen(input_buff) != 0){
+			parseCommand();
+			}
+			TIM2->CNT = 0;
+		}
+	}
+}
+
+
+
+void TIM2Config(void){
+	RCC->APB1ENR |= (1<<0);
+	
+	TIM2->PSC = 45000 - 1; /* fck = 90 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
+	TIM2->ARR = 0xFFFF; /*maximum clock count*/
+	
+	TIM2->CR1 |= (1<<0);
+	
+	while(!(TIM2->SR & (1<<0)));
+	
+}
+
 
 int main(void)
 {   
-    uint32_t t_delay = 1000;
-	
+    // uint32_t t_delay = 1000;
+	// GPIO Config
+    GPIO_InitTypeDef gpio_config;
 	/*	Configuration */
 	initClock();
 	sysInit();
@@ -134,7 +324,8 @@ int main(void)
 	UART4_Config();
 	UART5_Config();
 	TIM5Config();
-    
+    TIM2Config();
+	
     //set interrupt priority and enable IRQ
     NVIC_SetPriority(USART2_IRQn, 1);
     NVIC_EnableIRQ(USART2_IRQn);
@@ -149,8 +340,7 @@ int main(void)
     UART_SendString(USART2,"HELLO I'M IN\n");
     
     
-    // GPIO Config
-    GPIO_InitTypeDef gpio_config;
+    
     //config for output 
 	gpio_config.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_config.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
@@ -158,47 +348,73 @@ int main(void)
     GPIO_Init(GPIOA, &gpio_config);
     gpio_config.Pin = GPIO_PIN_1|GPIO_PIN_2;
 	GPIO_Init(GPIOB, &gpio_config);
+	
 	//config for input 
 	gpio_config.Mode = GPIO_MODE_INPUT;
 	gpio_config.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_3;
     GPIO_Init(GPIOB, &gpio_config);
 	
+	//timer start
+	TIM2->CNT = 0;
+	strcpy(input_buff,"");
+	strcpy(output_buff,"");
+	
     while(1){
-        
-        if(strlen(input_buff) != 0){
-			UART_SendString(USART2,"(main input): ");
-            UART_SendString(USART2,input_buff);
-            UART_SendString(USART2,"\n");
-            transmit_data(0);
-            strcpy(input_buff,"");
-        }else{
-			UART_SendString(USART2,"(main): INPUT EMPTY\n");
-		}			
-        GPIO_WritePin(GPIOB,1,GPIO_PIN_SET);
-        ms_delay(t_delay);
-        GPIO_WritePin(GPIOB,1,GPIO_PIN_RESET);
-        ms_delay(t_delay);
+		runningTime = 0;
+		clearLEDs();
+		uint16_t trafficNS = (uint16_t) rand()%2;
+		uint16_t trafficEW = (uint16_t) rand()%2;
 		
-        
-        if (strlen(output_buff) != 0){
-            if(!strcmp(output_buff,"inc")){
-                t_delay = 1000;
-            }else if(!strcmp(output_buff,"dec")){
-                t_delay = 50;
-            }
-            
-            UART_SendString(USART2,"(main output): ");
-            UART_SendString(USART2,output_buff);
-            UART_SendString(USART2,"\n");
-            strcpy(output_buff,"");
-        }else{
-			UART_SendString(USART2,"(main): OUTPUT EMPTY\n");
-		}
-        
-        
+		uint16_t balanced = trafficEW & trafficNS;
+		
+		if(balanced==0) runningTime += extraTime;
+			
+		 if (trafficNS) {
+			GPIO_WritePin(GPIOB, TRAFFIC_NS, GPIO_PIN_SET);
+			
+		 }
+		 if (trafficEW) {
+			GPIO_WritePin(GPIOB, TRAFFIC_EW, GPIO_PIN_SET);
+		 }
+		 
+		 if (runningNS) {
+			GPIO_WritePin(GPIOA, GREEN_NS, GPIO_PIN_SET);
+			GPIO_WritePin(GPIOA, RED_EW, GPIO_PIN_SET);
+			runningTime += g_delayNS;
+		 }
+		 else {
+			GPIO_WritePin(GPIOA, GREEN_EW, GPIO_PIN_SET);
+			GPIO_WritePin(GPIOA, RED_NS, GPIO_PIN_SET);
+			runningTime += g_delayEW;
+		 }
+//		 ms_delay(1000);
+		 tim5_delay(runningTime*1000);
+		 
+		 if(runningNS){
+			GPIO_WritePin(GPIOA, GREEN_NS, GPIO_PIN_RESET);
+			tim5_delay(y_delayNS*1000);
+		 }else {
+			GPIO_WritePin(GPIOA, GREEN_EW, GPIO_PIN_RESET);
+			tim5_delay(y_delayEW*1000);
+		 }
+		 
+		 runningNS = (runningNS==1)? 0:1;
+     
+		
+//        if(strlen(input_buff) != 0){
+//			parseCommand();
+//		}else{
+//			UART_SendString(USART2,"\nINPUT BUFF: emp\n");
+//		}
     }
 }
 
+void clearLEDs(void){
+    for(uint16_t i = 0; i<13; i++){
+        GPIO_WritePin(GPIOA, i, GPIO_PIN_RESET);
+        GPIO_WritePin(GPIOB, i, GPIO_PIN_RESET);
+    }
+}
 
 
 
