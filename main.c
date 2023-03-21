@@ -111,12 +111,21 @@ void transmit_data(uint32_t direction)
     usart = NULL;
 }
 
-
-
+void TIM5Config(void){
+	RCC->APB1ENR |= (1<<3);
+	
+	TIM5->PSC = 45000 - 1; /* fck = 90 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
+	TIM5->ARR = 0xFFFF; /*maximum clock count*/
+	
+	TIM5->CR1 |= (1<<0);
+	
+	while(!(TIM5->SR & (1<<0)));
+	
+}
 
 int main(void)
 {   
-    uint32_t t_delay = 500;
+    uint32_t t_delay = 1000;
 	
 	/*	Configuration */
 	initClock();
@@ -124,6 +133,7 @@ int main(void)
 	UART2_Config();
 	UART4_Config();
 	UART5_Config();
+	TIM5Config();
     
     //set interrupt priority and enable IRQ
     NVIC_SetPriority(USART2_IRQn, 1);
@@ -133,7 +143,7 @@ int main(void)
     NVIC_SetPriority(UART5_IRQn, 1);
     NVIC_EnableIRQ(UART5_IRQn);
     
-    NVIC_SetPriority(SysTick_IRQn,0);
+    NVIC_SetPriority(SysTick_IRQn,2);
     NVIC_EnableIRQ(SysTick_IRQn);
     
     UART_SendString(USART2,"HELLO I'M IN\n");
@@ -141,39 +151,49 @@ int main(void)
     
     // GPIO Config
     GPIO_InitTypeDef gpio_config;
-    gpio_config.Mode = GPIO_MODE_OUTPUT_PP;
+    //config for output 
+	gpio_config.Mode = GPIO_MODE_OUTPUT_PP;
     gpio_config.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    gpio_config.Pin = GPIO_PIN_5;
-    
-    
-    GPIO_Init(GPIOA,&gpio_config);
-    
-    
+    gpio_config.Pin = GPIO_PIN_5 | GPIO_PIN_6 | GPIO_PIN_8 | GPIO_PIN_9;
+    GPIO_Init(GPIOA, &gpio_config);
+    gpio_config.Pin = GPIO_PIN_1|GPIO_PIN_2;
+	GPIO_Init(GPIOB, &gpio_config);
+	//config for input 
+	gpio_config.Mode = GPIO_MODE_INPUT;
+	gpio_config.Pin = GPIO_PIN_4 | GPIO_PIN_5 | GPIO_PIN_3;
+    GPIO_Init(GPIOB, &gpio_config);
+	
     while(1){
         
         if(strlen(input_buff) != 0){
-//            UART_SendString(USART2,input_buff);
-//            UART_SendString(USART2,"\n");
-            transmit_data(1);
+			UART_SendString(USART2,"(main input): ");
+            UART_SendString(USART2,input_buff);
+            UART_SendString(USART2,"\n");
+            transmit_data(0);
             strcpy(input_buff,"");
-        }    
-        GPIO_WritePin(GPIOA,5,GPIO_PIN_SET);
+        }else{
+			UART_SendString(USART2,"(main): INPUT EMPTY\n");
+		}			
+        GPIO_WritePin(GPIOB,1,GPIO_PIN_SET);
         ms_delay(t_delay);
-        GPIO_WritePin(GPIOA,5,GPIO_PIN_RESET);
+        GPIO_WritePin(GPIOB,1,GPIO_PIN_RESET);
         ms_delay(t_delay);
+		
         
         if (strlen(output_buff) != 0){
             if(!strcmp(output_buff,"inc")){
                 t_delay = 1000;
             }else if(!strcmp(output_buff,"dec")){
-                t_delay = 100;
+                t_delay = 50;
             }
             
-            UART_SendString(USART2,"(main): ");
+            UART_SendString(USART2,"(main output): ");
             UART_SendString(USART2,output_buff);
             UART_SendString(USART2,"\n");
             strcpy(output_buff,"");
-        }
+        }else{
+			UART_SendString(USART2,"(main): OUTPUT EMPTY\n");
+		}
         
         
     }
