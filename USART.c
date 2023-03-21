@@ -102,6 +102,7 @@ void UART_GetString(USART_TypeDef *uart,uint16_t size,uint8_t* buff)
 }
 
 
+
 /******************************************
 	* 1. Enable UART clock and GPIO clock
 	* 2. Configure UART pin for Alternate function
@@ -144,6 +145,7 @@ void UART2_Config(void){
 	USART2->CR1 |= (1<<2); // enable RE for receiver 
 	USART2->CR1 |= (1<<3); //enable TE for transmitter
 	
+    USART2->CR1 |= USART_CR1_RXNEIE;
 }
 
 
@@ -158,8 +160,8 @@ void UART4_Config(void){
 	GPIOA->MODER |= (2<<0);  //PA0 -> Tx
 	GPIOA->MODER |= (2<<2);  //PA1 -> Rx
 	
-	GPIOA->OSPEEDR |= (GPIO_SPEED_FREQ_VERY_HIGH<<0) | 
-					  (GPIO_SPEED_FREQ_VERY_HIGH<<2);  
+	GPIOA->OSPEEDR |= (GPIO_SPEED_FREQ_HIGH<<0) | 
+					  (GPIO_SPEED_FREQ_HIGH<<2);  
 	
 	GPIOA->AFR[0] |= (8<<0); // bits(3,2,1,0) = (1000)
 	GPIOA->AFR[0] |= (8<<4); // bits(7,6,5,4) = (1000)
@@ -186,7 +188,7 @@ void UART5_Config(void){
 	
 	//1. Enable UART clock and GPIO clock
 	RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
-	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; //enable GPIOC clock
+	RCC->AHB1ENR |= RCC_AHB1ENR_GPIOCEN; //enable GPIOC
 	RCC->AHB1ENR |= RCC_AHB1ENR_GPIODEN; //enable GPIOD
 	
 	//2. Configure UART pin for Alternate function
@@ -200,7 +202,7 @@ void UART5_Config(void){
 	GPIOC->AFR[1] |= (8<<16); // bits(19,18,17,16) = (1000)
 	GPIOD->AFR[0] |= (8<<8); // bits(11,10,9,8) = (1000)
 	
-	//3. Enable UART on UART4_CR1 rgister
+	//3. Enable UART on UART5_CR1 rgister
 	UART5->CR1 = 0x00; //clear USART
 	
 	UART5->CR1 |= (1<<13);  // UE-bit enable USART
