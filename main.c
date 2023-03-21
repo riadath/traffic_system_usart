@@ -173,17 +173,26 @@ void parseCommand(void){
 }
 
 void show_traffic_info(void){
-	UART_SendString(USART2,"\nreporting stuff\n");
-	uint16_t G_NS_state = GPIO_PIN_8 & GPIOA->IDR;
-	uint16_t R_NS_state = GPIO_PIN_9 & GPIOA->IDR;
-	uint16_t G_EW_state = GPIO_PIN_6 & GPIOA->IDR;
-	uint16_t R_EW_state = GPIO_PIN_5 & GPIOA->IDR;
-	uint16_t Y_NS_state = (RED_NS == 0 && GREEN_NS == 0)? 1 : 0;
-	uint16_t Y_EW_state = (RED_EW == 0 && GREEN_EW == 0)? 1 : 0;
+	char *G_NS_state = (GPIO_PIN_8 & GPIOA->IDR)?"ON":"OFF";
+	char *R_NS_state = (GPIO_PIN_9 & GPIOA->IDR)?"ON":"OFF";
+	char *G_EW_state = (GPIO_PIN_6 & GPIOA->IDR)?"ON":"OFF";
+	char *R_EW_state = (GPIO_PIN_5 & GPIOA->IDR)?"ON":"OFF";
+	char *Y_NS_state = (RED_NS == 0 && GREEN_NS == 0)? "ON" : "OFF";
+	char *Y_EW_state = (RED_EW == 0 && GREEN_EW == 0)? "ON" : "OFF";
 	
-	uint16_t NS_congestion = TRAFFIC_NS & GPIOB->IDR;
-	uint16_t EW_congestion = TRAFFIC_EW & GPIOB->IDR;
+	char *NS_congestion = (GPIO_PIN_4 & GPIOB->IDR)?"heavy traffic":"light traffic";
+	char *EW_congestion = (GPIO_PIN_5 & GPIOB->IDR)?"heavy traffic":"light traffic";
 	
+	char str[50];
+	
+	sprintf(str, "%d traffic light 1 %s %s %s\n", (uint32_t) global_time, G_NS_state, Y_NS_state, R_NS_state);
+	UART_SendString(USART2, str);
+	sprintf(str, "%d traffic light 2 %s %s %s\n", (uint32_t) global_time, G_EW_state, Y_EW_state, R_EW_state);
+	UART_SendString(USART2, str);
+	sprintf(str, "%d road north south %s \n", (uint32_t) global_time, NS_congestion);
+	UART_SendString(USART2, str);
+	sprintf(str, "%d road east west %s \n", (uint32_t) global_time, EW_congestion);
+	UART_SendString(USART2, str);
 }
 
 void USART2_IRQHandler(void){
