@@ -195,9 +195,7 @@ void show_traffic_info(void){
 	UART_SendString(USART2, str);
 }
 
-void parseCommand(void){
-    
-}
+
 void USART2_IRQHandler(void){
     USART2->CR1 &= ~(USART_CR1_RXNEIE);
     getString();
@@ -299,12 +297,13 @@ void tim5_delay(uint16_t ms){
 	
 //	UART_SendString(USART2,str);
 	while(TIM5->CNT < ms){
+        
+        if(strlen(input_buff) != 0){
+			parseCommand();
+        }
 		if(TIM2->CNT > report_interval*2){
 			global_time += report_interval/1000;
 			show_traffic_info();
-			if(strlen(input_buff) != 0){
-			parseCommand();
-			}
 			TIM2->CNT = 0;
 		}
 	}
