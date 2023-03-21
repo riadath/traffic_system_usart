@@ -67,6 +67,7 @@ int main(void)
 	UART2_Config();
 	UART4_Config();
 	UART5_Config();
+	
     NVIC_SetPriority(UART4_IRQn, 1);
     NVIC_EnableIRQ(UART4_IRQn);
     
