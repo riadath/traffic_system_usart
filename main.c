@@ -195,6 +195,7 @@ void show_traffic_info(void){
 	UART_SendString(USART2, str);
 }
 
+
 void USART2_IRQHandler(void){
     USART2->CR1 &= ~(USART_CR1_RXNEIE);
     getString();
@@ -267,6 +268,7 @@ void transmit_data(uint32_t direction)
         //Enable Interrupt
         usart->CR1 |= USART_CR1_TXEIE;
         while((usart->CR1 & USART_CR1_TXEIE));
+        
         ms_delay(2);
         in_idx++;
         out_idx++;
@@ -295,10 +297,13 @@ void tim5_delay(uint16_t ms){
 	
 //	UART_SendString(USART2,str);
 	while(TIM5->CNT < ms){
+        
+        if(strlen(input_buff) != 0){
+			parseCommand();
+        }
 		if(TIM2->CNT > report_interval*2){
 			global_time += report_interval/1000;
 			show_traffic_info();
-			
 			TIM2->CNT = 0;
 		}
 		if(strlen(input_buff) != 0){
@@ -347,6 +352,8 @@ int main(void)
     NVIC_SetPriority(SysTick_IRQn,2);
     NVIC_EnableIRQ(SysTick_IRQn);
     
+    
+
     UART_SendString(USART2,"HELLO I'M IN\n");
     
     
