@@ -298,10 +298,11 @@ void tim5_delay(uint16_t ms){
 		if(TIM2->CNT > report_interval*2){
 			global_time += report_interval/1000;
 			show_traffic_info();
-			if(strlen(input_buff) != 0){
-			parseCommand();
-			}
+			
 			TIM2->CNT = 0;
+		}
+		if(strlen(input_buff) != 0){
+			parseCommand();
 		}
 	}
 }
