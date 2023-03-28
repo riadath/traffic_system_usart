@@ -102,10 +102,10 @@ void setDelayTraffic(char ch,uint32_t del,uint32_t light_no){
 void showTrafficConfig(uint32_t light_no){
 	char str[50];
 	if (light_no == 1)
-		sprintf(str,"traffic light 1 G Y R %d %d %d %d\n",(uint32_t)g_delayNS,
+		sprintf(str,"\ntraffic light 1 G Y R %d %d %d %d\n",(uint32_t)g_delayNS,
 		(uint32_t)y_delayNS,(uint32_t)r_delayNS,(uint32_t)extraTime);
 	if (light_no == 2)
-		sprintf(str,"traffic light 2 G Y R %d %d %d %d\n",(uint32_t)g_delayEW,
+		sprintf(str,"\ntraffic light 2 G Y R %d %d %d %d\n",(uint32_t)g_delayEW,
 		(uint32_t)y_delayEW,(uint32_t)r_delayEW,(uint32_t)extraTime);
 	
 //	UART_SendString(USART2,str);
@@ -117,7 +117,7 @@ void showTrafficConfig(uint32_t light_no){
 
 void showReportIntervalConfig(void){
 	char str[50];
-	sprintf(str,"traffic monitor %d\n",(uint32_t)report_interval/1000);
+	sprintf(str,"\ntraffic monitor %d\n",(uint32_t)report_interval/1000);
 	
 //	UART_SendString(USART2,str);
 	
@@ -289,13 +289,21 @@ void TIM5Config(void){
 	while(!(TIM5->SR & (1<<0)));
 	
 }
+void TIM2Config(void){
+	RCC->APB1ENR |= (1<<0);
+	
+	TIM2->PSC = 45000 - 1; /* fck = 90 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
+	TIM2->ARR = 0xFFFF; /*maximum clock count*/
+	
+	TIM2->CR1 |= (1<<0);
+	
+	while(!(TIM2->SR & (1<<0)));
+	
+}
+
 void tim5_delay(uint16_t ms){
 	ms = (uint16_t)2 * ms;
 	TIM5->CNT = 0;
-//	char str[50];
-//	sprintf(str,"in tim5delay tim2->cnt %d\n",TIM2->CNT);
-	
-//	UART_SendString(USART2,str);
 	while(TIM5->CNT < ms){
         
         if(strlen(input_buff) != 0){
@@ -311,22 +319,10 @@ void tim5_delay(uint16_t ms){
 
 
 
-void TIM2Config(void){
-	RCC->APB1ENR |= (1<<0);
-	
-	TIM2->PSC = 45000 - 1; /* fck = 90 mhz, CK_CNT = fck / (psc[15:0] + 1)*/
-	TIM2->ARR = 0xFFFF; /*maximum clock count*/
-	
-	TIM2->CR1 |= (1<<0);
-	
-	while(!(TIM2->SR & (1<<0)));
-	
-}
 
 
 int main(void)
 {   
-    // uint32_t t_delay = 1000;
 	// GPIO Config
     GPIO_InitTypeDef gpio_config;
 	/*	Configuration */
@@ -370,6 +366,8 @@ int main(void)
 	
 	//timer start
 	TIM2->CNT = 0;
+    
+    //buffer clear
 	strcpy(input_buff,"");
 	strcpy(output_buff,"");
 	

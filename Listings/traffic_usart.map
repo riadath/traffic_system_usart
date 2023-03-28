@@ -80,6 +80,7 @@ Section Cross References
     main.o(.text.UART5_IRQHandler) refers to main.o(.bss.input_buff) for input_buff
     main.o(.ARM.exidx.text.UART5_IRQHandler) refers to main.o(.text.UART5_IRQHandler) for [Anonymous Symbol]
     main.o(.ARM.exidx.text.TIM5Config) refers to main.o(.text.TIM5Config) for [Anonymous Symbol]
+    main.o(.ARM.exidx.text.TIM2Config) refers to main.o(.text.TIM2Config) for [Anonymous Symbol]
     main.o(.text.tim5_delay) refers to main.o(.bss.input_buff) for input_buff
     main.o(.text.tim5_delay) refers to strlen.o(.text) for strlen
     main.o(.text.tim5_delay) refers to main.o(.text.parseCommand) for parseCommand
@@ -87,7 +88,6 @@ Section Cross References
     main.o(.text.tim5_delay) refers to main.o(.bss.global_time) for global_time
     main.o(.text.tim5_delay) refers to main.o(.text.show_traffic_info) for show_traffic_info
     main.o(.ARM.exidx.text.tim5_delay) refers to main.o(.text.tim5_delay) for [Anonymous Symbol]
-    main.o(.ARM.exidx.text.TIM2Config) refers to main.o(.text.TIM2Config) for [Anonymous Symbol]
     main.o(.text.main) refers to clock.o(.text.initClock) for initClock
     main.o(.text.main) refers to sys_init.o(.text.sysInit) for sysInit
     main.o(.text.main) refers to usart.o(.text.UART2_Config) for UART2_Config
@@ -653,8 +653,8 @@ Removing Unused input sections from the image.
     Removing main.o(.ARM.exidx.text.UART4_IRQHandler), (8 bytes).
     Removing main.o(.ARM.exidx.text.UART5_IRQHandler), (8 bytes).
     Removing main.o(.ARM.exidx.text.TIM5Config), (8 bytes).
-    Removing main.o(.ARM.exidx.text.tim5_delay), (8 bytes).
     Removing main.o(.ARM.exidx.text.TIM2Config), (8 bytes).
+    Removing main.o(.ARM.exidx.text.tim5_delay), (8 bytes).
     Removing main.o(.ARM.exidx.text.main), (8 bytes).
     Removing main.o(.ARM.exidx.text.__NVIC_SetPriority), (8 bytes).
     Removing main.o(.ARM.exidx.text.__NVIC_EnableIRQ), (8 bytes).
@@ -1150,32 +1150,32 @@ Image Symbol Table
     [Anonymous Symbol]                       0x08004e04   Section        0  main.o(.rodata.str1.1)
     .L.str.14                                0x08004e1d   Data          23  main.o(.rodata.str1.1)
     .L.str.15                                0x08004e34   Data          14  main.o(.rodata.str1.1)
-    .L.str                                   0x08004e42   Data          35  main.o(.rodata.str1.1)
-    .L.str.1                                 0x08004e65   Data          35  main.o(.rodata.str1.1)
-    .L.str.3                                 0x08004e88   Data          20  main.o(.rodata.str1.1)
-    .L.str.11                                0x08004e9c   Data          30  main.o(.rodata.str1.1)
-    .L.str.12                                0x08004eba   Data          29  main.o(.rodata.str1.1)
-    .L.str.8                                 0x08004ed7   Data           4  main.o(.rodata.str1.1)
-    .L.str.7                                 0x08004edb   Data           3  main.o(.rodata.str1.1)
-    .L.str.10                                0x08004ede   Data          14  main.o(.rodata.str1.1)
-    .L.str.9                                 0x08004eec   Data          14  main.o(.rodata.str1.1)
-    .L.str.4                                 0x08004efa   Data          45  main.o(.rodata.str1.1)
-    .L.str.5                                 0x08004f27   Data          26  main.o(.rodata.str1.1)
-    .L.str.6                                 0x08004f41   Data          22  main.o(.rodata.str1.1)
-    .L.str.2                                 0x08004f56   Data           1  main.o(.rodata.str1.1)
-    c$$dinf                                  0x08004f78   Section        8  fpconst.o(c$$dinf)
-    c$$dmax                                  0x08004f80   Section        8  fpconst.o(c$$dmax)
-    locale$$data                             0x08004f88   Section       28  lc_numeric_c.o(locale$$data)
-    __lcnum_c_name                           0x08004f8c   Data           2  lc_numeric_c.o(locale$$data)
-    __lcnum_c_start                          0x08004f94   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_point                          0x08004fa0   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_thousands                      0x08004fa2   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_grouping                       0x08004fa3   Data           0  lc_numeric_c.o(locale$$data)
-    __lcnum_c_end                            0x08004fa4   Data           0  lc_numeric_c.o(locale$$data)
-    locale$$data                             0x08004fa4   Section      272  lc_ctype_c.o(locale$$data)
-    __lcctype_c_name                         0x08004fa8   Data           2  lc_ctype_c.o(locale$$data)
-    __lcctype_c_start                        0x08004fb0   Data           0  lc_ctype_c.o(locale$$data)
-    __lcctype_c_end                          0x080050b4   Data           0  lc_ctype_c.o(locale$$data)
+    .L.str                                   0x08004e42   Data          36  main.o(.rodata.str1.1)
+    .L.str.1                                 0x08004e66   Data          36  main.o(.rodata.str1.1)
+    .L.str.3                                 0x08004e8a   Data          21  main.o(.rodata.str1.1)
+    .L.str.11                                0x08004e9f   Data          30  main.o(.rodata.str1.1)
+    .L.str.12                                0x08004ebd   Data          29  main.o(.rodata.str1.1)
+    .L.str.8                                 0x08004eda   Data           4  main.o(.rodata.str1.1)
+    .L.str.7                                 0x08004ede   Data           3  main.o(.rodata.str1.1)
+    .L.str.10                                0x08004ee1   Data          14  main.o(.rodata.str1.1)
+    .L.str.9                                 0x08004eef   Data          14  main.o(.rodata.str1.1)
+    .L.str.4                                 0x08004efd   Data          45  main.o(.rodata.str1.1)
+    .L.str.5                                 0x08004f2a   Data          26  main.o(.rodata.str1.1)
+    .L.str.6                                 0x08004f44   Data          22  main.o(.rodata.str1.1)
+    .L.str.2                                 0x08004f59   Data           1  main.o(.rodata.str1.1)
+    c$$dinf                                  0x08004f7c   Section        8  fpconst.o(c$$dinf)
+    c$$dmax                                  0x08004f84   Section        8  fpconst.o(c$$dmax)
+    locale$$data                             0x08004f8c   Section       28  lc_numeric_c.o(locale$$data)
+    __lcnum_c_name                           0x08004f90   Data           2  lc_numeric_c.o(locale$$data)
+    __lcnum_c_start                          0x08004f98   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_point                          0x08004fa4   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_thousands                      0x08004fa6   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_grouping                       0x08004fa7   Data           0  lc_numeric_c.o(locale$$data)
+    __lcnum_c_end                            0x08004fa8   Data           0  lc_numeric_c.o(locale$$data)
+    locale$$data                             0x08004fa8   Section      272  lc_ctype_c.o(locale$$data)
+    __lcctype_c_name                         0x08004fac   Data           2  lc_ctype_c.o(locale$$data)
+    __lcctype_c_start                        0x08004fb4   Data           0  lc_ctype_c.o(locale$$data)
+    __lcctype_c_end                          0x080050b8   Data           0  lc_ctype_c.o(locale$$data)
     GREEN_EW                                 0x20000000   Data           2  main.o(.data.GREEN_EW)
     [Anonymous Symbol]                       0x20000000   Section        0  main.o(.data.GREEN_EW)
     GREEN_NS                                 0x20000002   Data           2  main.o(.data.GREEN_NS)
@@ -1596,15 +1596,15 @@ Image Symbol Table
     _scanf_infnan                            0x08004cd3   Thumb Code     4  scanf2.o(x$fpl$scanf2)
     __fpl_cmpreturn                          0x08004cd7   Thumb Code    48  trapv.o(x$fpl$trapveneer)
     __I$use$fp                               0x08004d06   Number         0  usenofp.o(x$fpl$usenofp)
-    Region$$Table$$Base                      0x08004f58   Number         0  anon$$obj.o(Region$$Table)
-    Region$$Table$$Limit                     0x08004f78   Number         0  anon$$obj.o(Region$$Table)
-    __aeabi_HUGE_VAL                         0x08004f78   Data           0  fpconst.o(c$$dinf)
-    __aeabi_HUGE_VALL                        0x08004f78   Data           0  fpconst.o(c$$dinf)
-    __aeabi_INFINITY                         0x08004f78   Data           0  fpconst.o(c$$dinf)
-    __dInf                                   0x08004f78   Data           0  fpconst.o(c$$dinf)
-    __huge_val                               0x08004f78   Data           0  fpconst.o(c$$dinf)
-    __dbl_max                                0x08004f80   Data           0  fpconst.o(c$$dmax)
-    __ctype                                  0x08004fb1   Data           0  lc_ctype_c.o(locale$$data)
+    Region$$Table$$Base                      0x08004f5c   Number         0  anon$$obj.o(Region$$Table)
+    Region$$Table$$Limit                     0x08004f7c   Number         0  anon$$obj.o(Region$$Table)
+    __aeabi_HUGE_VAL                         0x08004f7c   Data           0  fpconst.o(c$$dinf)
+    __aeabi_HUGE_VALL                        0x08004f7c   Data           0  fpconst.o(c$$dinf)
+    __aeabi_INFINITY                         0x08004f7c   Data           0  fpconst.o(c$$dinf)
+    __dInf                                   0x08004f7c   Data           0  fpconst.o(c$$dinf)
+    __huge_val                               0x08004f7c   Data           0  fpconst.o(c$$dinf)
+    __dbl_max                                0x08004f84   Data           0  fpconst.o(c$$dmax)
+    __ctype                                  0x08004fb5   Data           0  lc_ctype_c.o(locale$$data)
     _random_number_data                      0x20000020   Data         228  rand.o(.bss)
     __libspace_start                         0x20000104   Data          96  libspace.o(.bss)
     __temporary_stack_top$libspace           0x20000164   Data           0  libspace.o(.bss)
@@ -1617,9 +1617,9 @@ Memory Map of the image
 
   Image Entry point : 0x08000349
 
-  Load Region LR_1 (Base: 0x08000000, Size: 0x000050d4, Max: 0xffffffff, ABSOLUTE)
+  Load Region LR_1 (Base: 0x08000000, Size: 0x000050d8, Max: 0xffffffff, ABSOLUTE)
 
-    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000050b4, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RO (Exec base: 0x08000000, Load base: 0x08000000, Size: 0x000050b8, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1772,7 +1772,7 @@ Memory Map of the image
     0x08002b88   0x08002b88   0x00000010   Code   RO           85    .text.SysTick_Handler  sys_init.o
     0x08002b98   0x08002b98   0x00000012   Code   RO          141    .text.SystemInit    system_stm32f4xx.o
     0x08002baa   0x08002baa   0x00000002   PAD
-    0x08002bac   0x08002bac   0x00000048   Code   RO           26    .text.TIM2Config    main.o
+    0x08002bac   0x08002bac   0x00000048   Code   RO           24    .text.TIM2Config    main.o
     0x08002bf4   0x08002bf4   0x00000052   Code   RO           22    .text.TIM5Config    main.o
     0x08002c46   0x08002c46   0x00000002   PAD
     0x08002c48   0x08002c48   0x000000a2   Code   RO          119    .text.UART2_Config  usart.o
@@ -1806,7 +1806,7 @@ Memory Map of the image
     0x08003830   0x08003830   0x000000dc   Code   RO            6    .text.showTrafficConfig  main.o
     0x0800390c   0x0800390c   0x000001ac   Code   RO           14    .text.show_traffic_info  main.o
     0x08003ab8   0x08003ab8   0x00000010   Code   RO           87    .text.sysInit       sys_init.o
-    0x08003ac8   0x08003ac8   0x000000a0   Code   RO           24    .text.tim5_delay    main.o
+    0x08003ac8   0x08003ac8   0x000000a0   Code   RO           26    .text.tim5_delay    main.o
     0x08003b68   0x08003b68   0x000000d0   Code   RO            8    .text.transmit_data  main.o
     0x08003c38   0x08003c38   0x0000003e   Code   RO          412    CL$$btod_d2e        c_w.l(btod.o)
     0x08003c76   0x08003c76   0x00000046   Code   RO          414    CL$$btod_d2e_denorm_low  c_w.l(btod.o)
@@ -1859,38 +1859,38 @@ Memory Map of the image
     0x08004d49   0x08004d49   0x00000026   Data   RO          364    .constdata          c_w.l(_printf_fp_hex.o)
     0x08004d6f   0x08004d6f   0x00000001   PAD
     0x08004d70   0x08004d70   0x00000094   Data   RO          410    .constdata          c_w.l(bigflt0.o)
-    0x08004e04   0x08004e04   0x00000153   Data   RO           43    .rodata.str1.1      main.o
-    0x08004f57   0x08004f57   0x00000001   PAD
-    0x08004f58   0x08004f58   0x00000020   Data   RO          637    Region$$Table       anon$$obj.o
-    0x08004f78   0x08004f78   0x00000008   Data   RO          454    c$$dinf             fz_wm.l(fpconst.o)
-    0x08004f80   0x08004f80   0x00000008   Data   RO          457    c$$dmax             fz_wm.l(fpconst.o)
-    0x08004f88   0x08004f88   0x0000001c   Data   RO          439    locale$$data        c_w.l(lc_numeric_c.o)
-    0x08004fa4   0x08004fa4   0x00000110   Data   RO          496    locale$$data        c_w.l(lc_ctype_c.o)
+    0x08004e04   0x08004e04   0x00000156   Data   RO           43    .rodata.str1.1      main.o
+    0x08004f5a   0x08004f5a   0x00000002   PAD
+    0x08004f5c   0x08004f5c   0x00000020   Data   RO          637    Region$$Table       anon$$obj.o
+    0x08004f7c   0x08004f7c   0x00000008   Data   RO          454    c$$dinf             fz_wm.l(fpconst.o)
+    0x08004f84   0x08004f84   0x00000008   Data   RO          457    c$$dmax             fz_wm.l(fpconst.o)
+    0x08004f8c   0x08004f8c   0x0000001c   Data   RO          439    locale$$data        c_w.l(lc_numeric_c.o)
+    0x08004fa8   0x08004fa8   0x00000110   Data   RO          496    locale$$data        c_w.l(lc_ctype_c.o)
 
 
-    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x080050b4, Size: 0x00000020, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_RW (Exec base: 0x20000000, Load base: 0x080050b8, Size: 0x00000020, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
-    0x20000000   0x080050b4   0x00000002   Data   RW           50    .data.GREEN_EW      main.o
-    0x20000002   0x080050b6   0x00000002   Data   RW           48    .data.GREEN_NS      main.o
-    0x20000004   0x080050b8   0x00000002   Data   RW           49    .data.RED_EW        main.o
-    0x20000006   0x080050ba   0x00000002   Data   RW           47    .data.RED_NS        main.o
-    0x20000008   0x080050bc   0x00000002   Data   RW           56    .data.TRAFFIC_EW    main.o
-    0x2000000a   0x080050be   0x00000002   Data   RW           55    .data.TRAFFIC_NS    main.o
-    0x2000000c   0x080050c0   0x00000002   Data   RW           44    .data.extraTime     main.o
-    0x2000000e   0x080050c2   0x00000002   Data   RW           40    .data.g_delayEW     main.o
-    0x20000010   0x080050c4   0x00000002   Data   RW           37    .data.g_delayNS     main.o
-    0x20000012   0x080050c6   0x00000002   Data   RW           42    .data.r_delayEW     main.o
-    0x20000014   0x080050c8   0x00000002   Data   RW           39    .data.r_delayNS     main.o
-    0x20000016   0x080050ca   0x00000002   Data   RW           46    .data.report_interval  main.o
-    0x20000018   0x080050cc   0x00000002   Data   RW           57    .data.runningNS     main.o
-    0x2000001a   0x080050ce   0x00000002   Data   RW           54    .data.runningTime   main.o
-    0x2000001c   0x080050d0   0x00000002   Data   RW           41    .data.y_delayEW     main.o
-    0x2000001e   0x080050d2   0x00000002   Data   RW           38    .data.y_delayNS     main.o
+    0x20000000   0x080050b8   0x00000002   Data   RW           50    .data.GREEN_EW      main.o
+    0x20000002   0x080050ba   0x00000002   Data   RW           48    .data.GREEN_NS      main.o
+    0x20000004   0x080050bc   0x00000002   Data   RW           49    .data.RED_EW        main.o
+    0x20000006   0x080050be   0x00000002   Data   RW           47    .data.RED_NS        main.o
+    0x20000008   0x080050c0   0x00000002   Data   RW           56    .data.TRAFFIC_EW    main.o
+    0x2000000a   0x080050c2   0x00000002   Data   RW           55    .data.TRAFFIC_NS    main.o
+    0x2000000c   0x080050c4   0x00000002   Data   RW           44    .data.extraTime     main.o
+    0x2000000e   0x080050c6   0x00000002   Data   RW           40    .data.g_delayEW     main.o
+    0x20000010   0x080050c8   0x00000002   Data   RW           37    .data.g_delayNS     main.o
+    0x20000012   0x080050ca   0x00000002   Data   RW           42    .data.r_delayEW     main.o
+    0x20000014   0x080050cc   0x00000002   Data   RW           39    .data.r_delayNS     main.o
+    0x20000016   0x080050ce   0x00000002   Data   RW           46    .data.report_interval  main.o
+    0x20000018   0x080050d0   0x00000002   Data   RW           57    .data.runningNS     main.o
+    0x2000001a   0x080050d2   0x00000002   Data   RW           54    .data.runningTime   main.o
+    0x2000001c   0x080050d4   0x00000002   Data   RW           41    .data.y_delayEW     main.o
+    0x2000001e   0x080050d6   0x00000002   Data   RW           38    .data.y_delayNS     main.o
 
 
-    Execution Region ER_ZI (Exec base: 0x20000020, Load base: 0x080050d4, Size: 0x000007c0, Max: 0xffffffff, ABSOLUTE)
+    Execution Region ER_ZI (Exec base: 0x20000020, Load base: 0x080050d8, Size: 0x000007c0, Max: 0xffffffff, ABSOLUTE)
 
     Exec Addr    Load Addr    Size         Type   Attr      Idx    E Section Name        Object
 
@@ -1899,11 +1899,11 @@ Memory Map of the image
     0x20000164        -       0x00000004   Zero   RW           51    .bss.global_time    main.o
     0x20000168        -       0x00000004   Zero   RW           53    .bss.in_idx         main.o
     0x2000016c        -       0x00000032   Zero   RW           36    .bss.input_buff     main.o
-    0x2000019e   0x080050d4   0x00000002   PAD
+    0x2000019e   0x080050d8   0x00000002   PAD
     0x200001a0        -       0x00000004   Zero   RW           97    .bss.msTicks        sys_init.o
     0x200001a4        -       0x00000004   Zero   RW           52    .bss.out_idx        main.o
     0x200001a8        -       0x00000032   Zero   RW           45    .bss.output_buff    main.o
-    0x200001da   0x080050d4   0x00000006   PAD
+    0x200001da   0x080050d8   0x00000006   PAD
     0x200001e0        -       0x00000200   Zero   RW          132    HEAP                startup_stm32f446xx.o
     0x200003e0        -       0x00000400   Zero   RW          131    STACK               startup_stm32f446xx.o
 
@@ -1917,16 +1917,16 @@ Image component sizes
 
        214          0          0          0          0       1799   clock.o
        352          0          0          0          0       2697   gpio.o
-      3230          0        339         32        112      10542   main.o
+      3230          0        342         32        112      10542   main.o
         64         26        452          0       1536        912   startup_stm32f446xx.o
        228          0          0          0          4       4681   sys_init.o
         18          0          0          0          0       2761   system_stm32f4xx.o
        644          0          0          0          0       3673   usart.o
 
     ----------------------------------------------------------------------
-      4772         26        824         32       1660      27065   Object Totals
+      4772         26        828         32       1660      27065   Object Totals
          0          0         32          0          0          0   (incl. Generated)
-        22          0          1          0          8          0   (incl. Padding)
+        22          0          2          0          8          0   (incl. Padding)
 
     ----------------------------------------------------------------------
 
@@ -2077,15 +2077,15 @@ Image component sizes
 
       Code (inc. data)   RO Data    RW Data    ZI Data      Debug   
 
-     19268        488       1392         32       1984      30821   Grand Totals
-     19268        488       1392         32       1984      30821   ELF Image Totals
-     19268        488       1392         32          0          0   ROM Totals
+     19268        488       1396         32       1984      30821   Grand Totals
+     19268        488       1396         32       1984      30821   ELF Image Totals
+     19268        488       1396         32          0          0   ROM Totals
 
 ==============================================================================
 
-    Total RO  Size (Code + RO Data)                20660 (  20.18kB)
+    Total RO  Size (Code + RO Data)                20664 (  20.18kB)
     Total RW  Size (RW Data + ZI Data)              2016 (   1.97kB)
-    Total ROM Size (Code + RO Data + RW Data)      20692 (  20.21kB)
+    Total ROM Size (Code + RO Data + RW Data)      20696 (  20.21kB)
 
 ==============================================================================
 
