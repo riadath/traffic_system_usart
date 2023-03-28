@@ -3,7 +3,7 @@
 <title>Static Call Graph - [.\Objects\traffic_usart.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\traffic_usart.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Mar 22 09:51:25 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Mar 29 00:59:57 2023
 <BR><P>
 <H3>Maximum Stack Usage =        740 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -810,6 +810,7 @@ Global Symbols
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = strcpy
 </UL>
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
+<LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_traffic_info
 <LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parseCommand
 <LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;showReportIntervalConfig
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;showTrafficConfig
@@ -1511,12 +1512,14 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parseCommand
 </UL>
 
-<P><STRONG><a name="[fb]"></a>show_traffic_info</STRONG> (Thumb, 428 bytes, Stack size 120 bytes, main.o(.text.show_traffic_info))
-<BR><BR>[Stack]<UL><LI>Max Depth = 256 + Unknown Stack Size
+<P><STRONG><a name="[fb]"></a>show_traffic_info</STRONG> (Thumb, 502 bytes, Stack size 136 bytes, main.o(.text.show_traffic_info))
+<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
 <LI>Call Chain = show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
-<BR>[Calls]<UL><LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sprintf
+<BR>[Calls]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
+<LI><a href="#[a4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sprintf
 <LI><a href="#[e2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;UART_SendString
+<LI><a href="#[f6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;transmit_data
 </UL>
 <BR>[Called By]<UL><LI><a href="#[f4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tim5_delay
 </UL>
@@ -1529,7 +1532,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[f4]"></a>tim5_delay</STRONG> (Thumb, 160 bytes, Stack size 16 bytes, main.o(.text.tim5_delay))
+<P><STRONG><a name="[f4]"></a>tim5_delay</STRONG> (Thumb, 182 bytes, Stack size 16 bytes, main.o(.text.tim5_delay))
 <BR><BR>[Stack]<UL><LI>Max Depth = 644 + Unknown Stack Size
 <LI>Call Chain = tim5_delay &rArr; parseCommand &rArr; sscanf &rArr; __vfscanf_char &rArr; __vfscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
 </UL>
@@ -1546,7 +1549,8 @@ Global Symbols
 <BR>[Calls]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[fc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;ms_delay
 </UL>
-<BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parseCommand
+<BR>[Called By]<UL><LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_traffic_info
+<LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parseCommand
 <LI><a href="#[fa]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;showReportIntervalConfig
 <LI><a href="#[f9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;showTrafficConfig
 </UL>
