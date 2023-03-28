@@ -58,6 +58,51 @@ void showReportIntervalConfig(void);
 void setDelayTraffic(char ch,uint32_t del,uint32_t light_no);
 void clearLEDs(void);
 
+void USART2_IRQHandler(void){
+    USART2->CR1 &= ~(USART_CR1_RXNEIE);
+    getString();
+    USART2->CR1 |= (USART_CR1_RXNEIE);
+}
+
+void UART4_IRQHandler(void)
+{   
+    if (UART4->SR & USART_SR_RXNE){
+        while(!(UART4->SR & USART_SR_RXNE));
+        
+        output_buff[out_idx] = (uint8_t) UART4->DR;
+        
+        UART4->SR &= ~(USART_SR_RXNE);
+    }
+    
+    if (UART4->SR & USART_SR_TXE){
+        //handle queue here
+        UART4->DR = input_buff[in_idx];
+        while(!(UART4->SR & USART_SR_TXE));
+        
+        UART4->SR &= ~(USART_SR_TXE);
+        UART4->CR1 &= ~(USART_CR1_TXEIE);
+    }
+    
+}
+void UART5_IRQHandler(void){
+    
+    if (UART5->SR & USART_SR_RXNE){   
+        while(!(UART5->SR & USART_SR_RXNE));
+        
+        output_buff[out_idx] = (uint8_t) UART5->DR; 
+        
+        UART5->SR &= ~(USART_SR_RXNE);
+        
+    }
+    if (UART5->SR & USART_SR_TXE){
+        //handle queue here
+        UART5->DR = input_buff[in_idx];  
+        while(!(UART5->SR & USART_SR_TXE));        
+        
+        UART5->SR &= ~(USART_SR_TXE);
+        UART5->CR1 &= ~USART_CR1_TXEIE;
+    }
+}
 
 
 void getString(void){
@@ -69,15 +114,10 @@ void getString(void){
         if(ch == '!')break;
     }      
     input_buff[idx] = '\0';
-    
-//	uint32_t i;
-//    for(i = 0;i < strlen(input_buff);i++){
-//        UART_SendChar(USART2,input_buff[i]);
-//    }
-	
-	//parseCommand();
 
 }
+
+
 void setDelayTraffic(char ch,uint32_t del,uint32_t light_no){
 	
 	if(light_no == 1){
@@ -102,10 +142,10 @@ void setDelayTraffic(char ch,uint32_t del,uint32_t light_no){
 void showTrafficConfig(uint32_t light_no){
 	char str[50];
 	if (light_no == 1)
-		sprintf(str,"traffic light 1 G Y R %d %d %d %d\n",(uint32_t)g_delayNS,
+		sprintf(str,"\ntraffic light 1 G Y R %d %d %d %d\n",(uint32_t)g_delayNS,
 		(uint32_t)y_delayNS,(uint32_t)r_delayNS,(uint32_t)extraTime);
 	if (light_no == 2)
-		sprintf(str,"traffic light 2 G Y R %d %d %d %d\n",(uint32_t)g_delayEW,
+		sprintf(str,"\ntraffic light 2 G Y R %d %d %d %d\n",(uint32_t)g_delayEW,
 		(uint32_t)y_delayEW,(uint32_t)r_delayEW,(uint32_t)extraTime);
 	
 //	UART_SendString(USART2,str);
@@ -117,7 +157,7 @@ void showTrafficConfig(uint32_t light_no){
 
 void showReportIntervalConfig(void){
 	char str[50];
-	sprintf(str,"traffic monitor %d\n",(uint32_t)report_interval/1000);
+	sprintf(str,"\ntraffic monitor %d\n",(uint32_t)report_interval/1000);
 	
 //	UART_SendString(USART2,str);
 	
@@ -186,63 +226,22 @@ void show_traffic_info(void){
 	char str[50];
 	
 	sprintf(str, "\n%d traffic light 1 %s %s %s\n", (uint32_t) global_time, G_NS_state, Y_NS_state, R_NS_state);
-	UART_SendString(USART2, str);
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2, output_buff);
 	sprintf(str, "%d traffic light 2 %s %s %s\n", (uint32_t) global_time, G_EW_state, Y_EW_state, R_EW_state);
-	UART_SendString(USART2, str);
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2, output_buff);
 	sprintf(str, "%d road north south %s \n", (uint32_t) global_time, NS_congestion);
-	UART_SendString(USART2, str);
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2, output_buff);
 	sprintf(str, "%d road east west %s \n", (uint32_t) global_time, EW_congestion);
-	UART_SendString(USART2, str);
+	strcpy(input_buff,str);
+	transmit_data(UART5_TO_UART4);
+	UART_SendString(USART2, output_buff);
 }
-
-
-void USART2_IRQHandler(void){
-    USART2->CR1 &= ~(USART_CR1_RXNEIE);
-    getString();
-    USART2->CR1 |= (USART_CR1_RXNEIE);
-}
-
-void UART4_IRQHandler(void)
-{   
-    if (UART4->SR & USART_SR_RXNE){
-        while(!(UART4->SR & USART_SR_RXNE));
-        
-        output_buff[out_idx] = (uint8_t) UART4->DR;
-        
-        UART4->SR &= ~(USART_SR_RXNE);
-    }
-    
-    if (UART4->SR & USART_SR_TXE){
-        //handle queue here
-        UART4->DR = input_buff[in_idx];
-        while(!(UART4->SR & USART_SR_TXE));
-        
-        UART4->SR &= ~(USART_SR_TXE);
-        UART4->CR1 &= ~(USART_CR1_TXEIE);
-    }
-    
-}
-void UART5_IRQHandler(void){
-    
-    if (UART5->SR & USART_SR_RXNE){   
-        while(!(UART5->SR & USART_SR_RXNE));
-        
-        output_buff[out_idx] = (uint8_t) UART5->DR; 
-        
-        UART5->SR &= ~(USART_SR_RXNE);
-        
-    }
-    if (UART5->SR & USART_SR_TXE){
-        //handle queue here
-        UART5->DR = input_buff[in_idx];  
-        while(!(UART5->SR & USART_SR_TXE));        
-        
-        UART5->SR &= ~(USART_SR_TXE);
-        UART5->CR1 &= ~USART_CR1_TXEIE;
-    }
-}
-
-
 void transmit_data(uint32_t direction)
 {
     /*
@@ -269,7 +268,7 @@ void transmit_data(uint32_t direction)
         usart->CR1 |= USART_CR1_TXEIE;
         while((usart->CR1 & USART_CR1_TXEIE));
         
-        ms_delay(2);
+        ms_delay(1);
         in_idx++;
         out_idx++;
     }
@@ -325,6 +324,8 @@ void TIM2Config(void){
 	while(!(TIM2->SR & (1<<0)));
 	
 }
+
+
 
 
 int main(void)
