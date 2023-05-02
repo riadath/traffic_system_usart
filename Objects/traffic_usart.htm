@@ -3,11 +3,11 @@
 <title>Static Call Graph - [.\Objects\traffic_usart.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image .\Objects\traffic_usart.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Wed Mar 29 00:59:57 2023
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 6190004: Last Updated: Tue May  2 17:07:56 2023
 <BR><P>
-<H3>Maximum Stack Usage =        740 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =       1144 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
-__rt_entry_main &rArr; main &rArr; tim5_delay &rArr; parseCommand &rArr; sscanf &rArr; __vfscanf_char &rArr; __vfscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
+__rt_entry_main &rArr; main &rArr; tim5_delay &rArr; show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 <P>
 <H3>
 Functions with no stack information
@@ -429,8 +429,8 @@ Global Symbols
 <P><STRONG><a name="[13f]"></a>__rt_entry_postsh_1</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$00000009))
 
 <P><STRONG><a name="[9d]"></a>__rt_entry_main</STRONG> (Thumb, 0 bytes, Stack size unknown bytes, __rtentry2.o(.ARM.Collect$$rtentry$$0000000D))
-<BR><BR>[Stack]<UL><LI>Max Depth = 740 + Unknown Stack Size
-<LI>Call Chain = __rt_entry_main &rArr; main &rArr; tim5_delay &rArr; parseCommand &rArr; sscanf &rArr; __vfscanf_char &rArr; __vfscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
+<BR><BR>[Stack]<UL><LI>Max Depth = 1144 + Unknown Stack Size
+<LI>Call Chain = __rt_entry_main &rArr; main &rArr; tim5_delay &rArr; show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 <LI><a href="#[9f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;exit
@@ -1236,10 +1236,10 @@ Global Symbols
 </UL>
 
 <P><STRONG><a name="[95]"></a>__rt_locale</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, rt_locale_intlibspace.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_ctype_table
-<LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_scanf_really_real
+<BR><BR>[Called By]<UL><LI><a href="#[d3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_scanf_really_real
 <LI><a href="#[c6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;_printf_fp_dec_real
 <LI><a href="#[94]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_lib_init_lc_common
+<LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__rt_ctype_table
 </UL>
 
 <P><STRONG><a name="[cf]"></a>__aeabi_errno_addr</STRONG> (Thumb, 8 bytes, Stack size 0 bytes, rt_errno_addr_intlibspace.o(.text))
@@ -1377,14 +1377,14 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[3e]"></a>UART4_IRQHandler</STRONG> (Thumb, 194 bytes, Stack size 0 bytes, main.o(.text.UART4_IRQHandler))
+<P><STRONG><a name="[3e]"></a>UART4_IRQHandler</STRONG> (Thumb, 172 bytes, Stack size 0 bytes, main.o(.text.UART4_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
 <P><STRONG><a name="[ec]"></a>UART5_Config</STRONG> (Thumb, 208 bytes, Stack size 0 bytes, usart.o(.text.UART5_Config))
 <BR><BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[3f]"></a>UART5_IRQHandler</STRONG> (Thumb, 194 bytes, Stack size 0 bytes, main.o(.text.UART5_IRQHandler))
+<P><STRONG><a name="[3f]"></a>UART5_IRQHandler</STRONG> (Thumb, 172 bytes, Stack size 0 bytes, main.o(.text.UART5_IRQHandler))
 <BR>[Address Reference Count : 1]<UL><LI> startup_stm32f446xx.o(RESET)
 </UL>
 <P><STRONG><a name="[e7]"></a>UART_GetChar</STRONG> (Thumb, 36 bytes, Stack size 8 bytes, usart.o(.text.UART_GetChar))
@@ -1437,9 +1437,9 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[9e]"></a>main</STRONG> (Thumb, 696 bytes, Stack size 96 bytes, main.o(.text.main))
-<BR><BR>[Stack]<UL><LI>Max Depth = 740 + Unknown Stack Size
-<LI>Call Chain = main &rArr; tim5_delay &rArr; parseCommand &rArr; sscanf &rArr; __vfscanf_char &rArr; __vfscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
+<P><STRONG><a name="[9e]"></a>main</STRONG> (Thumb, 678 bytes, Stack size 88 bytes, main.o(.text.main))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1144 + Unknown Stack Size
+<LI>Call Chain = main &rArr; tim5_delay &rArr; show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
 <LI><a href="#[f3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rand
@@ -1512,8 +1512,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[f5]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;parseCommand
 </UL>
 
-<P><STRONG><a name="[fb]"></a>show_traffic_info</STRONG> (Thumb, 502 bytes, Stack size 136 bytes, main.o(.text.show_traffic_info))
-<BR><BR>[Stack]<UL><LI>Max Depth = 272 + Unknown Stack Size
+<P><STRONG><a name="[fb]"></a>show_traffic_info</STRONG> (Thumb, 588 bytes, Stack size 904 bytes, main.o(.text.show_traffic_info))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1040 + Unknown Stack Size
 <LI>Call Chain = show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f2]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strcpy
@@ -1532,9 +1532,9 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[9e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;main
 </UL>
 
-<P><STRONG><a name="[f4]"></a>tim5_delay</STRONG> (Thumb, 182 bytes, Stack size 16 bytes, main.o(.text.tim5_delay))
-<BR><BR>[Stack]<UL><LI>Max Depth = 644 + Unknown Stack Size
-<LI>Call Chain = tim5_delay &rArr; parseCommand &rArr; sscanf &rArr; __vfscanf_char &rArr; __vfscanf &rArr; _scanf_real &rArr; _scanf_really_real &rArr; _fp_value &rArr; _btod_etento &rArr; _btod_emul &rArr; _e2e
+<P><STRONG><a name="[f4]"></a>tim5_delay</STRONG> (Thumb, 198 bytes, Stack size 16 bytes, main.o(.text.tim5_delay))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1056 + Unknown Stack Size
+<LI>Call Chain = tim5_delay &rArr; show_traffic_info &rArr; sprintf &rArr; _printf_char_common &rArr; __printf
 </UL>
 <BR>[Calls]<UL><LI><a href="#[f8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;strlen
 <LI><a href="#[fb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;show_traffic_info
